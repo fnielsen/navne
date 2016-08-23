@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Gender.
 
 Usage:
@@ -55,7 +56,7 @@ class Gender(object):
                 self.name_to_gender_map[name] = value
 
     def predict(self, name):
-        """Predict gender of name.
+        u"""Predict gender of name.
 
         Parameters
         ----------
@@ -70,25 +71,35 @@ class Gender(object):
         Examples
         --------
         >>> gender = Gender()
-        >>> value = gender.predict('Finn')
+        >>> gender.predict('Finn')
         1.0
-        >>> value = gender.predict('Anna')
+        >>> gender.predict('Anna')
         0.0
-        >>> value = gender.predict('ZZZ')
+        >>> gender.predict('ZZZ')
         0.5
+        >>> gender.predict(u'Bjørn')
+        1.0
+        >>> gender.predict('Finn Nielsen')
+        1.0
 
         """
-        return self.name_to_gender_map.get(name, 0.5)
+        name_parts = name.split()
+        return self.name_to_gender_map.get(name_parts[0], 0.5)
 
 
 def main():
     """Handle command-line interface."""
+    import sys
+
     from docopt import docopt
 
     arguments = docopt(__doc__)
 
     gender = Gender()
-    value = gender.predict(arguments['<name>'])
+
+    encoding = sys.getfilesystemencoding()
+    name = arguments['<name>'].decode(encoding)
+    value = gender.predict(name)
     print(value)
 
 
